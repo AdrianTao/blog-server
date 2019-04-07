@@ -1,4 +1,5 @@
 import { Articles as ArticlesModel } from '../../models'
+import utils from '../../utils/utils.js'
 import moment from 'moment'
 
 class Article {
@@ -80,7 +81,26 @@ class Article {
 
   // 新增文章
   createArticle (req,res,next) {
-    ArticlesModel.addArticle(req.body)
+    let parameter = req.body
+    if (req.file.length !== 0) {  // 包含文件说明携带了封面
+      let file = req.file
+      let fileInfo = {}
+      //这里修改文件名字
+      let newFileName = utils.fileRename(file)
+      // 获取文件信息
+      // fileInfo.mimetype = file.mimetype
+      // fileInfo.originalname = file.originalname
+      // fileInfo.size = file.size
+      // fileInfo.path = file.path
+
+      // 设置响应类型及编码
+      res.set({
+        'content-type': 'application/json; charset=utf-8'
+      })
+      parameter.picture = 'upload/' + newFileName // 因为public是根目录所以不需要带上
+    }
+    
+    ArticlesModel.addArticle(parameter)
       .then( (json) => {
         console.log(json)
         res.json({
@@ -141,12 +161,21 @@ class Article {
 
   // 编辑文章
   edit (req,res,next) {
-    console.log(req.body)
-    let id = req.body.id,
-        title = req.body.title,
-        content = req.body.content
+    let { id, title, subtitle, content, classify } = req.body
+    let picture = ''
+
+    if (req.file) {
+      let newFileName = utils.fileRename(req.file)
+      picture = 'upload/' + newFileName
+    }
+    res.set({
+      'content-type': 'application/json; charset=utf-8'
+    })
+
+    // 删除旧图片
+    //...
   
-    ArticlesModel.editArticle(id, {title, content})
+    ArticlesModel.editArticle(id, {title, subtitle, content, picture, classify})
       .then( (result) => {
         console.dir(result)
         if (result.ok && result.n>0) {

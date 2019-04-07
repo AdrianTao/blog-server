@@ -55,6 +55,28 @@ class Comments {
         })
       })
   }
+
+  // 删除一个评论
+  del (req,res,next) {
+    let { id } = req.body
+    CommentsModel.del(id)
+      .then(json => {
+        if (json.ok && json.n>0) {
+          res.send({
+            code:200,
+            message:'删除成功'
+          })
+        } else {
+          throw new Error('该评论不存在')
+        }
+      })
+      .catch(err => {
+        res.send({
+          code:-200,
+          message:err.toString()
+        })
+      })
+  }
 }
 
 export default new Comments()

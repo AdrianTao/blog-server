@@ -22,4 +22,8 @@ export default {
       return Comments.find.sort({_id:-1})
     }
   },
+
+  del (id) {
+    return Comments.remove({_id: id})
+  }
 }

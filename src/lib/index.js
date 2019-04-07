@@ -2,7 +2,7 @@
  * @Author: Adrian.taojun 
  * @Date: 2018-05-13 20:10:09 
  * @Last Modified by: Adrian.taojun
- * @Last Modified time: 2018-07-04 20:22:16
+ * @Last Modified time: 2019-04-05 19:41:22
  * 
  * 数据库模型
  */
@@ -15,7 +15,9 @@ mongoose.connect("mongodb://localhost/my-story")
 let articlesSchema = new mongoose.Schema({
   classify: { type: String },
   title: { type: String },
+  subtitle: { type: String },
   content: { type: String },
+  picture: { type: String},
   time : { 
     type: Date,
     default: Date.now,
